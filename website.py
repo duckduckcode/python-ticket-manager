@@ -1,4 +1,4 @@
-from bottle import route, view, run, static_file
+from bottle import route, view, run, static_file, request
 from itertools import count
 
 
@@ -92,10 +92,22 @@ def sell_ticket():
 
 
 # Sale Confirmation Page
-@route('/ticket-sold')
+@route('/ticket-sold', method='POST')
 @view('sale-confirmation')
 def ticket_sold():
-    pass
+    
+    first_name = request.forms.get('first_name')
+    last_name = request.forms.get('last_name')
+    email = request.forms.get('email')
+
+    new_ticket = Ticket(first_name, last_name, email)
+    tickets.append(new_ticket)
+
+    data = dict(
+        ticket = new_ticket
+    )
+
+    return data
 
 
 
@@ -108,4 +120,4 @@ def send_static(filename):
 
 # START THE WEBSITE ###########
 
-run(host='localhost', port=8081, reloader=True, debug=True)
+run(host='0.0.0.0', port=8080, reloader=True, debug=True)
